@@ -8,13 +8,10 @@ namespace TechStore.DTOs
 {
     public class OrderItemDTO
     {
-        public int ProductId { get; set; }
-        public string ProductName { get; set; }
 
         [Required]
         public int Quantity { get; set; }
-
-        [Required]
-        public decimal UnitPrice { get; set; }
+        public int ProductId { get; set; }
+        public string OrderId { get; set; }
     }
 }

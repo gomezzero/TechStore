@@ -17,7 +17,7 @@ namespace TechStore.Models
 
 
         [Column("order_status")]
-        public string OrderStatus { get; set; } = "Pending";  // Default status
+        public string OrderStatus { get; set; } = "Pending";
 
         [Column("order_date")]
         public DateTime OrderDate { get; set; } = DateTime.Now;

@@ -32,11 +32,11 @@ namespace TechStore.Models
         public required Product Product { get; set; }
 
 
-        public OrderItem(int quantity, int orderId, int productId)
+        public OrderItem(int quantity, int productId, int orderId)
         {
             Quantity = quantity;
-            OrderId = orderId;
             ProductId = productId;
+            OrderId = orderId;
         }
     }
 }
