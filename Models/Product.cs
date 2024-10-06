@@ -28,7 +28,7 @@ namespace TechStore.Models
 
         // connection with foreign key
         [ForeignKey("caregorie_id")]
-        public required  ProductCategorie ProductCategorie { get; set; }
+        public required ProductCategorie ProductCategorie { get; set; }
 
         public Product(string name, string description, double price, int quantityInStock, int caregoryeId)
         {

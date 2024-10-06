@@ -12,6 +12,9 @@ namespace TechStore.DTOs
         public string Username { get; set; }
 
         [Required]
+        public string PasswordHash { get; set; }
+
+        [Required]
         public bool Role { get; set; }  // Admin or Employee
     }
 }

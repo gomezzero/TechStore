@@ -27,12 +27,12 @@ namespace TechStore.Models
         [Column("emails")]
         public required string Email { get; set; }
 
-        public Customer(string name, string address, string phone, string emails)
+        public Customer(string name, string address, string phone, string email)
         {
             Name = name.ToLower().Trim();
             Address = address.ToLower().Trim();
             Phone = phone.Trim();
-            Email = emails.ToLower().Trim();
+            Email = email.ToLower().Trim();
         }
     }
 }
