@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TechStore.Models
 {
- [Table("users")]
+    [Table("users")]
     public class User
     {
         [Key]
@@ -15,19 +15,23 @@ namespace TechStore.Models
         [Column("username")]
         public string Username { get; set; }
 
+        [Column("emails")]
+        public string Email { get; set; }
+
         [Required]
-        [Column("password_hash")]
-        public string PasswordHash { get; set; }
+        [Column("password")]
+        public string Password { get; set; }
 
         [Required]
         [Column("role")]
         public bool Role { get; set; }  // "Admin" or "Employee"
 
-        public User(string username, string passwordHash, bool role)
+        public User(string username, string email, string password, bool role)
         {
             Username = username.ToLower().Trim();
-            PasswordHash = passwordHash;
+            Email = email.ToLower().Trim();
+            Password = password;
             Role = role;
         }
-        }
+    }
 }

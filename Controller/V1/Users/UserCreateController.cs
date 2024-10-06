@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using TechStore.Controller.V1.Users;
 using TechStore.DTOs;
 using TechStore.Models;
 using TechStore.Repositories;
@@ -25,7 +18,7 @@ namespace TechStore.Controller.V1.Users
                 return BadRequest(ModelState);
             }
 
-            var newUser = new User(inputUser.Username, inputUser.PasswordHash, inputUser.Role);
+            var newUser = new User(inputUser.Username, inputUser.Email, inputUser.Password, inputUser.Role);
 
             await _userRepository.Add(newUser);
 

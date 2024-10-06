@@ -38,8 +38,9 @@ namespace TechStore.Controller.V1.Users
             }
 
             user.Username = updateUser.Username;
+            user.Email = updateUser.Email;
             user.Role = updateUser.Role;
-            user.PasswordHash = updateUser.PasswordHash;
+            user.Password = updateUser.Password;
 
             await _userRepository.Update(user);
             return NoContent();
