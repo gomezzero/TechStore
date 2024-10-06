@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using TechStore.Config;
+using TechStore.DTOs.Requets;
+using TechStore.Models;
 using TechStore.Repositories;
+using TechStore.Utils;
 
 namespace TechStore.Controller.V1.Auth
 {
@@ -20,6 +18,34 @@ namespace TechStore.Controller.V1.Auth
             servicios = userRepository;
         }
 
-        
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login(LoginDTO data)
+        {
+            var user = await servicios.GetByEmail(data.Email);
+
+            if (user == null)
+            {
+                return BadRequest("El usuario no existe");
+            }
+
+            // Verificar la contraseña hasheada
+            bool isPasswordValid = PasswordHasher.VerifyPassword(data.Password, user.Password);
+
+            if (!isPasswordValid)
+            {
+                return BadRequest("Contraseña incorrecta");
+            }
+
+            if (user.Role != true)
+            {
+                return Unauthorized($"Suerte, no tiene los permisos necesarios");
+            }
+
+            var token = JWT.GenerateJwtToken(user);
+
+            return Ok($"ACA ESTA SU TOKEN: {token}");
+        }
+
     }
 }

@@ -3,9 +3,11 @@ using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using TechStore.Config;
 using TechStore.Data;
 using TechStore.Repositories;
-using TechStore.Services; // Asegúrate de incluir tu namespace
+using TechStore.Services;
 
 // Add services to the container.
 Env.Load();
@@ -26,10 +28,10 @@ builder.Services.AddDbContext<MyDbContext>(options =>
 
 // Registrar IUserRepository con su implementación UserServices
 builder.Services.AddScoped<IUserRepository, UserServices>();
-
+builder.Services.AddScoped<ICustomerRepository, CustomerService>();
 
 // ACA HABILITAMOS LA OPCION QUE NOS PERMITE USAR JWT
-// builder.Services.AddSingleton<JWT>();
+builder.Services.AddSingleton<JWT>();
 builder.Services.AddAuthentication(config =>
 {
     config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -51,16 +53,37 @@ builder.Services.AddAuthentication(config =>
     };
 });
 
-
-
 // Add services to the container.
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    // Sets the XML file path
-    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+c.SwaggerDoc("v1", new OpenApiInfo { Title = "techstore", Version = "v1" });
+
+c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+{
+    Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
+    Name = "Authorization",
+    In = ParameterLocation.Header,
+    Type = SecuritySchemeType.Http,
+    Scheme = "Bearer"
+});
+
+c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
 var app = builder.Build();
@@ -73,12 +96,13 @@ if (app.Environment.IsDevelopment())
         options =>
         {
             options.SwaggerEndpoint("/swagger/v1/swagger.json", "Version 1");
-            options.SwaggerEndpoint("/swagger/v2/swagger.json", "Version 2");
         }
     );
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

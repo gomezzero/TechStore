@@ -74,6 +74,12 @@ namespace TechStore.Services
             return await _context.Users.FindAsync(id);
         }
 
+        public async Task<User?> GetByEmail(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+
         public async Task Update(User user)
         {
             if (user == null)

@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TechStore.DTOs;
 using TechStore.Models;
 using TechStore.Repositories;
+using TechStore.Utils;
 
 namespace TechStore.Controller.V1.Users
 {
@@ -11,14 +13,18 @@ namespace TechStore.Controller.V1.Users
     public class UserCreateController(IUserRepository userRepository) : UserController(userRepository)
     {
         [HttpPost]
+        [Authorize] // etiqueta para permitir bloquear el uso de enpins con JWT
         public async Task<ActionResult<User>> Create(UserDTO inputUser)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var newUser = new User(inputUser.Username, inputUser.Email, inputUser.Password, inputUser.Role);
+            // Hashear la contraseña antes de guardar
+            var hashedPassword = PasswordHasher.HashPassword(inputUser.Password);
+
+            var newUser = new User(inputUser.Username, inputUser.Email, hashedPassword, inputUser.Role);
 
             await _userRepository.Add(newUser);
 

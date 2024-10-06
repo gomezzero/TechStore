@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using TechStore.DTOs;
 using TechStore.Repositories;
+using TechStore.Utils; // Asegúrate de importar la clase PasswordHasher desde Utils
 
 namespace TechStore.Controller.V1.Users
 {
@@ -16,6 +12,7 @@ namespace TechStore.Controller.V1.Users
     public class UserUpdateController(IUserRepository userRepository) : UserController(userRepository)
     {
         [HttpPut("{id}")]
+        [Authorize] // etiqueta para permitir bloquear el uso de endpoints con JWT
         public async Task<IActionResult> Update(int id, UserDTO updateUser)
         {
             if(!ModelState.IsValid)
@@ -25,7 +22,7 @@ namespace TechStore.Controller.V1.Users
 
             var checkUser = await _userRepository.CheckExistence(id);
 
-            if(checkUser == false)
+            if(!checkUser)
             {
                 return NotFound();
             }
@@ -37,10 +34,16 @@ namespace TechStore.Controller.V1.Users
                 return NotFound();
             }
 
+            // Actualizamos los campos del usuario
             user.Username = updateUser.Username;
             user.Email = updateUser.Email;
             user.Role = updateUser.Role;
-            user.Password = updateUser.Password;
+
+            // Si se proporciona una nueva contraseña, la hasheamos
+            if (!string.IsNullOrWhiteSpace(updateUser.Password))
+            {
+                user.Password = PasswordHasher.HashPassword(updateUser.Password);
+            }
 
             await _userRepository.Update(user);
             return NoContent();

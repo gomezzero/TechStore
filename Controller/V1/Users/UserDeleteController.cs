@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechStore.DTOs;
@@ -17,6 +18,8 @@ namespace TechStore.Controller.V1.Users
     public class UserDeleteController(IUserRepository userRepository) : UserController(userRepository)
     {
         [HttpDelete("{id}")]
+        [Authorize] // etiqueta para permitir bloquear el uso de enpins con JWT
+
         public async Task<IActionResult> Delete(int id)
         {
             var user = await _userRepository.CheckExistence(id);

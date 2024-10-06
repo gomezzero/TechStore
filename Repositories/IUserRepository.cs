@@ -10,6 +10,7 @@ namespace TechStore.Repositories
     {
         Task<IEnumerable<User>> GetAll();
         Task<User?> GetById(int id);
+        Task<User?> GetByEmail(string email);
         Task<IEnumerable<User>> GetByKeyword(string keyword);
         Task Add(User user);
         Task Update(User user);
